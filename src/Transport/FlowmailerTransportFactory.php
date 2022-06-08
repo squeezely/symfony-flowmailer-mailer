@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Flowmailer\Symfony\Mailer\Transport;
 
+use Flowmailer\API\Options;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
@@ -21,17 +22,18 @@ final class FlowmailerTransportFactory extends AbstractTransportFactory
 {
     public function create(Dsn $dsn): TransportInterface
     {
-        $scheme    = $dsn->getScheme();
-
-        $user      = $this->getUser($dsn);
-        $password  = $this->getPassword($dsn);
-        $accountId = $dsn->getOption('account_id');
-
-        $host = 'default' === $dsn->getHost() ? null : $dsn->getHost();
-        $port = $dsn->getPort();
+        $scheme = $dsn->getScheme();
 
         if ('flowmailer+api' === $scheme || 'flowmailer' === $scheme) {
-            return new FlowmailerApiTransport($dsn, $this->client, $this->dispatcher, $this->logger);
+            $options = [];
+            foreach (['account_id', 'protocol', 'base_url',  'auth_base_url',  'oauth_scope'] as $key) {
+                $options[$key] = $dsn->getOption($key, null);
+            }
+            $options['host']          = 'default' === $dsn->getHost() ? null : $dsn->getHost();
+            $options['client_id']     = $this->getUser($dsn);
+            $options['client_secret'] = $this->getPassword($dsn);
+
+            return new FlowmailerApiTransport(new Options(array_filter($options)), $this->client, $this->dispatcher, $this->logger);
         }
 
         throw new UnsupportedSchemeException($dsn, 'flowmailer', $this->getSupportedSchemes());
