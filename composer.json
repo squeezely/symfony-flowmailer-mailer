@@ -1,0 +1,52 @@
+{
+    "name": "flowmailer/symfony-flowmailer-mailer",
+    "description": "Provides Flowmailer integration for Symfony Mailer",
+    "license": "MIT",
+    "type": "symfony-mailer-bridge",
+    "authors": [
+        {
+            "name": "Reyo Stallenberg",
+            "email": "reyo@flowmailer.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "flowmailer/flowmailer-php-sdk": "*",
+        "nyholm/psr7": "*",
+        "symfony/http-client": "*",
+        "symfony/mailer": "^6.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.21",
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "icanhazstring/composer-unused": "^0.7.11",
+        "maglnet/composer-require-checker": "^3.8",
+        "nyholm/symfony-bundle-test": "^1.8",
+        "phpstan/phpstan": "^1.2",
+        "phpunit/phpunit": "^9.5",
+        "symfony/console": "^5.4 || ^6.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Flowmailer\\Symfony\\Mailer\\": "src"
+        }
+    },
+    "scripts": {
+        "analyse": [
+            "composer validate --no-check-lock",
+            "phpstan analyse --level=7 src",
+            "composer-require-checker",
+            "composer-unused --no-ansi --excludePackage=ext-ctype --excludePackage=ext-iconv"
+        ],
+        "fix": [
+            "php-cs-fixer fix --allow-risky=yes",
+            "composer validate --no-check-lock",
+            "composer normalize --no-update-lock"
+        ],
+        "test": [
+            "XDEBUG_MODE=off php -dmemory_limit=1G -dpcov.enabled=1 -dpcov.directory=. -dpcov.exclude=\"~vendor~\" ./vendor/bin/phpunit --coverage-html=tests/coverage"
+        ]
+    }
+}
