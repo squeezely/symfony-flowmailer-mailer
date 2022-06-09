@@ -3,21 +3,22 @@ stages:
   - deploy
 
 test:
-    stage: test
-    cache:
-        paths:
-            - vendor/
-    before_script:
-        - composer config --global gitlab-token.gitlab.com ${COMPOSER_CICD_READ}
-        - composer install --no-scripts
-    script:
-        - composer test -- --log-junit report.xml --coverage-html=tests/coverage --coverage-text --colors=never
-    artifacts:
-        when: always
-        reports:
-            junit: report.xml
-        paths:
-            - ./tests/coverage
+  image: thecodingmachine/php:8.1-v4-cli
+  stage: test
+  cache:
+    paths:
+      - vendor/
+  before_script:
+    - composer config --global gitlab-token.gitlab.com ${COMPOSER_CICD_READ}
+    - composer install --no-scripts
+  script:
+    - composer test -- --log-junit report.xml --coverage-html=tests/coverage --coverage-text --colors=never
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+    paths:
+      - ./tests/coverage
 
 deploy:
   image: curlimages/curl:latest
