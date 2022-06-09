@@ -33,6 +33,11 @@
             "Flowmailer\\Symfony\\Mailer\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Flowmailer\\Symfony\\Mailer\\Tests\\": "tests"
+        }
+    },
     "scripts": {
         "analyse": [
             "composer validate --no-check-lock",

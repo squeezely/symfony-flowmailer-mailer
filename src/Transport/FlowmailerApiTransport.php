@@ -54,7 +54,7 @@ final class FlowmailerApiTransport extends AbstractApiTransport
     {
         return sprintf(
             'flowmailer+api://%s?account_id=%s',
-            $this->options->getBaseUrl(),
+            parse_url($this->options->getBaseUrl(), PHP_URL_HOST),
             $this->options->getAccountId()
         );
     }
