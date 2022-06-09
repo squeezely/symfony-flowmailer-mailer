@@ -21,6 +21,7 @@ test:
       junit: report.xml
     paths:
       - ./tests/coverage
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
 deploy:
   image: curlimages/curl:latest
