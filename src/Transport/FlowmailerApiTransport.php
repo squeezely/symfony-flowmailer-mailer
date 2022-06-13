@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace Flowmailer\Symfony\Mailer\Transport;
 
 use Flowmailer\API\Collection\AttachmentCollection;
+use Flowmailer\API\Collection\HeaderCollection;
 use Flowmailer\API\Flowmailer;
 use Flowmailer\API\Model\Attachment;
+use Flowmailer\API\Model\Header;
 use Flowmailer\API\Model\SubmitMessage;
 use Flowmailer\API\Options;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -76,6 +78,14 @@ final class FlowmailerApiTransport extends AbstractApiTransport
             );
         }
 
+        $headers = new HeaderCollection();
+
+        foreach (['From', 'To', 'Cc'] as $key) {
+            if ($values = $email->getPreparedHeaders()->getHeaderBody($key)) {
+                $headers->add(new Header($key, implode(', ', $this->stringifyAddresses($values))));
+            }
+        }
+
         $sender     = $envelope->getSender()->toString();
         $recipients = $this->stringifyAddresses($this->getRecipients($email, $envelope));
 
@@ -88,6 +98,7 @@ final class FlowmailerApiTransport extends AbstractApiTransport
                 ->setHtml($email->getHtmlBody())
                 ->setText($email->getTextBody())
                 ->setAttachments($attachments)
+                ->setHeaders($headers)
             ;
 
             $request  = $this->flowmailer->createRequestForSubmitMessage($submitMessage);
