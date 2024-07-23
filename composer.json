@@ -14,7 +14,7 @@
         "nyholm/psr7": "*",
         "symfony/http-client": "*",
         "symfony/mailer": "^6.0",
-        "squeezely/flowmailer-php-sdk": "dev-main"
+        "squeezely/flowmailer-php-sdk": "^1.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.21",
